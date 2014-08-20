@@ -1,8 +1,3 @@
-// 'Firewalker' LED sneakers sketch for Adafruit NeoPixels by Phillip Burgess
-// Uses self-calibrating code by Jeff H.
-// Switches between modes every time power is turned off
-// Each mode displays arbitrary user-defined colors
-
 #include <Adafruit_NeoPixel.h>
 #include <elapsedMillis.h>
 #include <EEPROM.h>
@@ -46,9 +41,9 @@ uint8_t gamma[] PROGMEM = {
 // the strip and shoe sizes, and the positions of the front- and rear-most LEDs.
 // Becky's shoes: 39 LEDs total, 20 LEDs long, LED #5 at back.
 // Phil's shoes: 43 LEDs total, 22 LEDs long, LED #6 at back.
-#define N_LEDS 37 // TOTAL number of LEDs in strip
+#define N_LEDS 36 // TOTAL number of LEDs in strip
 #define SHOE_LEN_LEDS 18 // Number of LEDs down ONE SIDE of shoe
-#define SHOE_LED_BACK 5// Index of REAR-MOST LED on shoe
+#define SHOE_LED_BACK 5 // Index of REAR-MOST LED on shoe
 #define STEP_PIN A7 // Analog input for footstep
 #define LED_PIN 9 // NeoPixel strip is connected here
 #define MAXSTEPS 3 // Process (up to) this many concurrent steps
@@ -117,6 +112,7 @@ void setMode() {
   EEPROM.write(MODEADDRESS, (uint8_t)nextmode);   
 }
 
+
 // When you first start the program, all 4 colors for the current mode
 // are displayed using this function before calibration starts.
 void displayColors() {
@@ -148,6 +144,7 @@ void calibrate() {
   }
   displayColors();
   while (timer < 5000) { // Calibrate for 5 seconds
+    Serial.println(analogRead(STEP_PIN));
     stepFiltered = ((stepFiltered * 3) + analogRead(STEP_PIN)) >> 2;
     Serial.print("stepFitered calibration = " );
     Serial.println(stepFiltered);
@@ -185,7 +182,7 @@ void calibrate() {
 void setup() {
   Serial.begin(9600);
   setMode();
-  pinMode(9, INPUT_PULLUP); // Set internal pullup resistor for sensor pin
+  pinMode(6, INPUT_PULLUP); // Set internal pullup resistor for sensor pin
   // As previously mentioned, the step animation is mirrored on the inside and
   // outside faces of the shoe. To avoid a bunch of math and offsets later, the
   // 'dup' array indicates where each pixel on the outside face of the shoe should
@@ -329,3 +326,4 @@ uint8_t bValue(long level) {
   }
   return b;
 }
+
